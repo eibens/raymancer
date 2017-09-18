@@ -50,7 +50,7 @@ fun buildScene(): Scene {
     val maxZ = Plane(Vec3(0f, 0f, +wall), Vec3(0f, 0f, -1f))
     val sphere1 = Sphere(Vec3(2f, 0f, 0f), 0.6f)
     val sphere2 = Sphere(Vec3(-2f, -1f, 0f), 0.6f)
-    val sphere3 = Sphere(Vec3(0f, 2f, 4f), 3f)
+    val sphere3 = Sphere(Vec3(0f, 2f, 2f), 2f)
 
     return scene {
         light(Vec3(0f, -wall + 1f, 0f), Vec3(1f, 1f, 1f) * 20f)
