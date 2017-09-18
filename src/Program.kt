@@ -36,12 +36,10 @@ fun Image.show(stage: Stage) {
 }
 
 fun buildScene(): Scene {
-    val reflective = Material(reflective = true)
-    val white = Material(Color(1f, 1f, 1f))
-    val red = Material(Color(1f, 0f, 0f))
-    val blue = Material(Color(0f, 0f, 1f))
-    val green = Material(Color(0f, 1f, 0f))
-    val yellow = Material(Color(1f, 1f, 0f))
+    val reflective = Material(reflection = 0.4f)
+    val white = Material(Color(1f, 1f, 1f), 0.1f)
+    val red = Material(Color(1f, 0f, 0f), 0.1f)
+    val green = Material(Color(0f, 1f, 0f), 0.1f)
 
     val wall = 5f
     val minX = Plane(Vec3(-wall, 0f, 0f), Vec3(+1f, 0f, 0f))
@@ -62,8 +60,8 @@ fun buildScene(): Scene {
         model(minX, red)
         model(maxX, green)
         model(minY, white)
-        model(maxY, yellow)
-        model(minZ, reflective)
-        model(maxZ, blue)
+        model(maxY, white)
+        model(minZ, white)
+        model(maxZ, white)
     }
 }

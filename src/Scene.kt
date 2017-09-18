@@ -1,4 +1,4 @@
-class Material(var color: Color = Color(), var reflective: Boolean = false)
+class Material(var color: Color = Color(), var reflection: Float = 0f)
 
 class Model(var shape: Shape, var material: Material)
 
