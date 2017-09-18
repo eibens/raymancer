@@ -1,6 +1,5 @@
 import javafx.application.Application
 import javafx.scene.Group
-import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.scene.image.PixelFormat
 import javafx.scene.image.WritableImage
@@ -13,22 +12,58 @@ fun main(args: Array<String>) {
 
 class Main : Application() {
     override fun start(stage: Stage?) {
-        val bytesPerPixel = 3
-        val width = 500
-        val height = 500
-        val stride = bytesPerPixel * width
-
-        val image = Image(width, height)
-        raymancer(image)
-        val data = image.toRgbArray()
-
-        val output = WritableImage(width, height)
-        output.pixelWriter.setPixels(0, 0, width, height, PixelFormat.getByteRgbInstance(), data, 0, stride)
-        stage!!.apply {
-            title = "Raymancer"
-            scene = Scene(Group(ImageView(output)))
-            sizeToScene()
-            show()
+        val image = Image(500, 500)
+        val scene = buildScene()
+        Camera(-4f, 1f).shoot(image) {
+            Raymancer.trace(it, scene, 10)
         }
+        image.show(stage!!)
+    }
+}
+
+fun Image.show(stage: Stage) {
+    val bytesPerPixel = 3
+    val stride = width * bytesPerPixel
+    val data = toRgbArray()
+    val output = WritableImage(width, height)
+    output.pixelWriter.setPixels(0, 0, width, height, PixelFormat.getByteRgbInstance(), data, 0, stride)
+    stage.apply {
+        title = "Raymancer"
+        scene = javafx.scene.Scene(Group(ImageView(output)))
+        sizeToScene()
+        show()
+    }
+}
+
+fun buildScene(): Scene {
+    val reflective = Material(reflective = true)
+    val white = Material(Color(1f, 1f, 1f))
+    val red = Material(Color(1f, 0f, 0f))
+    val blue = Material(Color(0f, 0f, 1f))
+    val green = Material(Color(0f, 1f, 0f))
+    val yellow = Material(Color(1f, 1f, 0f))
+
+    val wall = 5f
+    val minX = Plane(Vec3(-wall, 0f, 0f), Vec3(+1f, 0f, 0f))
+    val maxX = Plane(Vec3(+wall, 0f, 0f), Vec3(-1f, 0f, 0f))
+    val minY = Plane(Vec3(0f, -wall, 0f), Vec3(0f, +1f, 0f))
+    val maxY = Plane(Vec3(0f, +wall, 0f), Vec3(0f, -1f, 0f))
+    val minZ = Plane(Vec3(0f, 0f, -wall), Vec3(0f, 0f, +1f))
+    val maxZ = Plane(Vec3(0f, 0f, +wall), Vec3(0f, 0f, -1f))
+    val sphere1 = Sphere(Vec3(2f, 0f, 0f), 0.6f)
+    val sphere2 = Sphere(Vec3(-2f, -1f, 0f), 0.6f)
+    val sphere3 = Sphere(Vec3(0f, 2f, 4f), 3f)
+
+    return scene {
+        light(Vec3(0f, -wall + 1f, 0f), Vec3(1f, 1f, 1f) * 20f)
+        model(sphere1, reflective)
+        model(sphere2, reflective)
+        model(sphere3, reflective)
+        model(minX, red)
+        model(maxX, green)
+        model(minY, white)
+        model(maxY, yellow)
+        model(minZ, reflective)
+        model(maxZ, blue)
     }
 }
