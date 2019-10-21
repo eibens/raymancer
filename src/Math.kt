@@ -37,6 +37,20 @@ infix fun Vec3.dot(v: Vec3) = (this * v).innerSum
 fun Vec3.reflect(normal: Vec3) =
         this - 2 * (this dot normal) * normal
 
+/// Computes the refracted direction of this vector using Snell's law.
+fun Vec3.refract(normal: Vec3, ior: Float): Vec3 {
+    val c1 = -this dot normal
+    val eta = if (c1 < 0) ior else 1f / ior
+    val c2 = 1 - eta * eta * (1 - c1 * c1)
+    if (c2 < 0f) return Vec3() // total internal reflection
+    val c2root = Math.sqrt(c2.toDouble()).toFloat()
+    return eta * this + (eta * c1 - c2root) * normal
+}
+
+/// Angle between this vector and the specified vector.
+infix fun Vec3.angleTo(v: Vec3) =
+        Math.acos((this dot v).toDouble())
+
 /// Squared euclidean norm of this vector.
 val Vec3.lengthSquared: Float
     get() = this dot this

@@ -10,8 +10,6 @@ class Scene {
     var lights = mutableSetOf<Light>()
 }
 
-fun scene(block: Scene.() -> Unit) = Scene().apply(block)
-
 fun Scene.model(shape: Shape, material: Material) {
     models.add(Model(shape, material))
 }
